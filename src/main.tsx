@@ -1,7 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Home from './components/screens/home'
+import Home from './components/screens/home/Home'
 import './index.css'
 import ThemeProvider from './providers/ThemeProvider'
 

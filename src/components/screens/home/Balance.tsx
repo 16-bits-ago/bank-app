@@ -1,21 +1,10 @@
-import { Box, Center, Flex, Heading, Text } from '@chakra-ui/react'
+import { Box, Flex, Heading, Text } from '@chakra-ui/react'
 import { FC } from 'react'
+import { user } from './Home'
 
-const user = {
-  name: 'John Smith',
-  balance: 8640
-}
-
-const Home: FC = () => {
+const Balance: FC = () => {
   return (
-    <Box bg="black" p="6">
-      <Box>
-        <Text color="whiteAlpha.500" fontSize="xl">
-          Good Morning
-        </Text>
-        <Heading fontSize="2xl">{user.name}</Heading>
-      </Box>
-      <Box pos={'relative'} width={'50%'} m="auto" mt={4}>
+    <Box pos={'relative'} width={'50%'} m="auto" mt={4}>
         <Flex
           justifyContent={'center'}
           alignItems="center"
@@ -51,8 +40,7 @@ const Home: FC = () => {
           </Box>
         </Flex>
       </Box>
-    </Box>
   )
 }
 
-export default Home
+export default Balance
