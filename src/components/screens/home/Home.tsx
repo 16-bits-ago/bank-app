@@ -14,7 +14,7 @@ const Home: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
-    <Box bg="black" p="6">
+    <Box bg="black" p="6" h={'100vh'}>
       <Box>
         <Text color="whiteAlpha.500" fontSize="xl">
           Good Morning
