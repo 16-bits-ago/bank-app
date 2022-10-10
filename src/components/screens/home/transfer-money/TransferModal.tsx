@@ -16,10 +16,12 @@ import {
   ModalOverlay,
   Stack
 } from '@chakra-ui/react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { useProfile } from '../../../../hooks/useProfile'
+import { ITransferMoney, UserService } from '../../../../services/user.services'
 import { formatCardNumber } from '../../../../utils/format-card-number'
-import { user } from '../Home'
 import { ITransferData } from './transfer.interface'
 
 interface ITransferModal {
@@ -28,10 +30,12 @@ interface ITransferModal {
 }
 
 const TransferModal: FC<ITransferModal> = ({ isOpen, onClose }) => {
+  const { user } = useProfile()
   const {
     handleSubmit,
     register,
     control,
+    reset,
     formState: { errors, isSubmitting }
   } = useForm<ITransferData>({
     mode: 'onChange',
@@ -40,7 +44,27 @@ const TransferModal: FC<ITransferModal> = ({ isOpen, onClose }) => {
     }
   })
 
-  const onSubmit: SubmitHandler<ITransferData> = data => {}
+  const queryClient = useQueryClient()
+
+  const { mutate, isLoading } = useMutation(
+    ['transfer money'],
+    (data: ITransferMoney) => UserService.transferMoney(data), {
+      async onSuccess(){
+        reset()
+        await queryClient.invalidateQueries(['profile'])
+      }
+    }
+  )
+
+  const onSubmit: SubmitHandler<ITransferData> = data => {
+    if (!user?.card) return
+
+    mutate({
+      card: data.card,
+      amount: Number(data.amount),
+      fromCard: user.card
+    })
+  }
 
   return (
     <Modal
@@ -60,7 +84,7 @@ const TransferModal: FC<ITransferModal> = ({ isOpen, onClose }) => {
               <Input
                 placeholder="From card"
                 size="md"
-                defaultValue={formatCardNumber(user.cardNumber)}
+                defaultValue={formatCardNumber(user?.card || 0)}
                 disabled
               />
               <Controller
@@ -101,7 +125,13 @@ const TransferModal: FC<ITransferModal> = ({ isOpen, onClose }) => {
                   })}
                 />
               </InputGroup>
-              <Button colorScheme="green" variant="outline">
+              <Button
+                colorScheme="green"
+                variant="outline"
+                isLoading={isLoading}
+                loadingText={'Sending money...'}
+                type='submit'
+              >
                 Send money
               </Button>
             </Stack>
