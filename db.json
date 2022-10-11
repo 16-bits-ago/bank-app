@@ -3,19 +3,19 @@
     {
       "id": 1,
       "name": "John Smith",
-      "balance": 7500,
+      "balance": 5500,
       "card": 1234123633336566
     },
     {
       "id": 2,
       "name": "Snow kek",
-      "balance": 1090,
+      "balance": 1190,
       "card": 3459287549895833
     },
     {
       "id": 3,
       "name": "Joska test",
-      "balance": 100,
+      "balance": 1700,
       "card": 7771277732123722
     }
   ]

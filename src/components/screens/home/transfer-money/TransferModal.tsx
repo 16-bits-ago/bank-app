@@ -17,11 +17,12 @@ import {
   Stack
 } from '@chakra-ui/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useProfile } from '../../../../hooks/useProfile'
 import { ITransferMoney, UserService } from '../../../../services/user.services'
 import { formatCardNumber } from '../../../../utils/format-card-number'
+import SuccessAlert from './SuccessAlert'
 import { ITransferData } from './transfer.interface'
 
 interface ITransferModal {
@@ -31,6 +32,8 @@ interface ITransferModal {
 
 const TransferModal: FC<ITransferModal> = ({ isOpen, onClose }) => {
   const { user } = useProfile()
+  const [isSuccess, setIsSuccess] = useState(false)
+
   const {
     handleSubmit,
     register,
@@ -48,10 +51,16 @@ const TransferModal: FC<ITransferModal> = ({ isOpen, onClose }) => {
 
   const { mutate, isLoading } = useMutation(
     ['transfer money'],
-    (data: ITransferMoney) => UserService.transferMoney(data), {
-      async onSuccess(){
+    (data: ITransferMoney) => UserService.transferMoney(data),
+    {
+      async onSuccess() {
+        setIsSuccess(true)
         reset()
         await queryClient.invalidateQueries(['profile'])
+
+        setTimeout(() => {
+          setIsSuccess(false)
+        }, 2000)
       }
     }
   )
@@ -74,7 +83,8 @@ const TransferModal: FC<ITransferModal> = ({ isOpen, onClose }) => {
       motionPreset="slideInBottom"
     >
       <ModalOverlay />
-      <ModalContent bg={'#171717'}>
+      <ModalContent bg={'#171717'} pos="relative">
+        <SuccessAlert isSuccess={isSuccess} />
         <ModalHeader>Transfer your money</ModalHeader>
         <ModalCloseButton />
 
@@ -130,7 +140,7 @@ const TransferModal: FC<ITransferModal> = ({ isOpen, onClose }) => {
                 variant="outline"
                 isLoading={isLoading}
                 loadingText={'Sending money...'}
-                type='submit'
+                type="submit"
               >
                 Send money
               </Button>
